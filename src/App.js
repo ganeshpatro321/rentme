@@ -2,6 +2,7 @@ import React from "react";
 import "./App.css";
 import { BrowserRouter, Route, Switch} from 'react-router-dom';
 import Home from "./Components/Home";
+import CarStatus from "./Components/CarStatus";
 import "semantic-ui-css/semantic.min.css";
 
 class App extends React.Component {
@@ -35,6 +36,9 @@ class App extends React.Component {
          return <Home carDetails={this.state.carDetails} />
        }
        } />
+       <Route path="/car/:location/:date" render={ ({match}) => {
+         return <CarStatus {...match.params} carDetails={this.state.carDetails}/>
+       }} />
       </Switch>
     </BrowserRouter>
     );
