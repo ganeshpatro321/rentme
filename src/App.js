@@ -1,26 +1,47 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import "./App.css";
+import { BrowserRouter, Route, Switch} from 'react-router-dom';
+import Home from "./Components/Home";
+import "semantic-ui-css/semantic.min.css";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends React.Component {
+  constructor(props) {    
+    super(props);
+    this.state = {
+      carDetails: []
+    };
+  }
+
+  fetcCarDetails = async () => {
+    await fetch("https://api.sheety.co/311576ae-321a-43e3-9a5b-61b3ac373d85")
+      .then(res => res.json())
+      .then(res => {
+        this.setState({
+          carDetails: res
+        });
+      });
+  };
+
+  componentDidMount() {
+    this.fetcCarDetails();
+  }
+
+  render() {
+    if(this.state.carDetails.length !== 0){
+    return (
+    <BrowserRouter>
+      <Switch>
+       <Route exact path="/" render={ () => {
+         return <Home carDetails={this.state.carDetails} />
+       }
+       } />
+      </Switch>
+    </BrowserRouter>
+    );
+    } else {
+    return <div> Loading.. </div>
+    }
+  }
 }
 
 export default App;
