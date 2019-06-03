@@ -2,6 +2,7 @@ import React from "react";
 import { Button, Select, Form } from "semantic-ui-react";
 import { Redirect } from "react-router-dom";
 import { DatePicker } from "antd";
+import moment from 'moment';
 
 import "antd/dist/antd.css";
 
@@ -50,9 +51,10 @@ class CustomForm extends React.Component {
       }
     }
 
-    if (this.state.redirect) {
+    if (this.state.redirect ) {
       return <Redirect to={`/car/${this.state.location}/${this.state.date}`} />;
     }
+    const dateFormat = 'YYYY-MM-DD';
 
     return (
       <div>
@@ -83,11 +85,16 @@ class CustomForm extends React.Component {
                 label="Location"
                 options={locationOptions}
                 placeholder="Select Your location"
+                onChange={this.handleChange}
+                defaultValue={this.props.location}
               />
             <Form.Field>
               <label>Date</label>
-              <DatePicker onChange={this.handleDateChange} />
+              <DatePicker onChange={this.handleDateChange} defaultValue={moment(this.props.date, dateFormat)} />
             </Form.Field>
+            <Button type="submit" onClick={this.handleSubmit}>
+              Submit
+            </Button>
             </Form.Group>
           </Form>
           </div>

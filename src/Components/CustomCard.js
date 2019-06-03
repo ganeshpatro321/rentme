@@ -70,7 +70,7 @@ function CustomCard(props) {
               </Card.Description>
             </Card.Content>
             <Card.Content extra>
-              <p align="center">All Rights Reserved</p>
+              {props.carItemDetail.isAvailable ? <p align="center" style = {{ color: "green"}}>Available</p> : <p align="center" style={{color: "red"}}> Not Available </p>}
             </Card.Content>
           </Card>
         </div>
