@@ -41,9 +41,11 @@ class CustomForm extends React.Component {
   }
 
   handleDateChange = selectedDate => {
+    if(selectedDate){
     this.setState({
       date: selectedDate._d.toISOString().slice(0, 10)
     });
+  }
   };
 
   handleChange = (e, data) => {
