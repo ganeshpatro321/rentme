@@ -2,6 +2,7 @@ import React from "react";
 import CustomForm from "./CustomForm";
 import CustomCard from "./CustomCard";
 import moment from "moment";
+import SearchInput, {createFilter} from 'react-search-input';
 import { Segment, Form, Select, Card, Image } from "semantic-ui-react";
 
 class CarStatus extends React.Component {
@@ -13,7 +14,8 @@ class CarStatus extends React.Component {
       carType: "Any",
       fuelType: "Any",
       transmission: "Any",
-      priceOrder: "Low To High"
+      priceOrder: "Low To High",
+      searchTerm: ""
     };
   }
 
@@ -55,6 +57,12 @@ class CarStatus extends React.Component {
     );
   };
 
+  searchUpdated = (term) => {
+      this.setState({searchTerm: term}, () => {
+          this.getAvailableCars();
+      })
+  }
+
   availabilityCheck = (date, availability) => {
     date = moment(date, "YYYY-MM-DD");
     availability = availability.split(/[ ,]+/);
@@ -66,6 +74,7 @@ class CarStatus extends React.Component {
   };
 
   getAvailableCars = () => {
+    const KEYS_TO_FILTER = ['name', 'car_Type', 'fuel_Type', 'transmission', 'location']
     let temp = this.props.carDetails.filter(
       car => car.location === this.props.location
     );
@@ -85,14 +94,14 @@ class CarStatus extends React.Component {
     if (this.state.transmission !== "Any") {
       temp = temp.filter(car => car.transmission === this.state.transmission);
     }
-    this.sortAvailability(temp); //To show available cars first.
     this.sortCarsByPrice(temp, this.state.priceOrder)
+    this.sortAvailability(temp); //To show available cars first.
+    if(this.state.searchTerm !== ""){
+    temp = temp.filter(createFilter(this.state.searchTerm, KEYS_TO_FILTER));
+    }
     this.setState(
       {
         filteredCars: temp
-      },
-      () => {
-        console.log("Called");
       }
     );
   };
@@ -225,6 +234,10 @@ class CarStatus extends React.Component {
                   defaultValue={this.state.priceOrder}
                   onChange={this.handleChange}
                 />
+                <Form.Field>
+                    <label> Search </label>
+                    <SearchInput placeholder="Search using keywords. (Ex: SUV, Mahindra)" onChange={this.searchUpdated} />
+                </Form.Field>
               </Form.Group>
             </Form>
           </Segment>
