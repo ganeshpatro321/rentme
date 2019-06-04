@@ -2,7 +2,7 @@ import React from "react";
 import { Button, Select, Form } from "semantic-ui-react";
 import { Redirect } from "react-router-dom";
 import { DatePicker } from "antd";
-import moment from 'moment';
+import moment from "moment";
 
 import "antd/dist/antd.css";
 
@@ -16,22 +16,25 @@ class CustomForm extends React.Component {
   }
 
   componentDidMount() {
-      if(this.props.location || this.props.date){
+    if (this.props.location || this.props.date) {
       this.setState({
         location: this.props.location,
         date: this.props.date
-      })
+      });
     }
   }
 
   componentDidUpdate(prevState) {
-  if(prevState.location !== this.props.location || prevState.date !== this.props.date){
-    this.setState({
-      redirect: false,
-      location: this.props.location,
-      date: this.props.date
-    })
-  }
+    if (
+      prevState.location !== this.props.location ||
+      prevState.date !== this.props.date
+    ) {
+      this.setState({
+        redirect: false,
+        location: this.props.location,
+        date: this.props.date
+      });
+    }
   }
 
   handleDateChange = selectedDate => {
@@ -70,10 +73,10 @@ class CustomForm extends React.Component {
       }
     }
 
-    if (this.state.redirect ) {
+    if (this.state.redirect) {
       return <Redirect to={`/car/${this.state.location}/${this.state.date}`} />;
     }
-    const dateFormat = 'YYYY-MM-DD';
+    const dateFormat = "YYYY-MM-DD";
 
     return (
       <div>
@@ -97,25 +100,33 @@ class CustomForm extends React.Component {
           </Form>
         ) : (
           <div>
-          <Form>
-            <Form.Group widths="equal">
-            <Form.Select
-                fluid
-                label="Location"
-                options={locationOptions}
-                placeholder="Select Your location"
-                onChange={this.handleChange}
-                defaultValue={this.props.location}
-              />
-            <Form.Field>
-              <label>Date</label>
-              <DatePicker onChange={this.handleDateChange} defaultValue={moment(this.props.date, dateFormat)} />
-            </Form.Field>
-            <Button type="submit" onClick={this.handleSubmit} >
-              Submit
-            </Button>
-            </Form.Group>
-          </Form>
+            <Form>
+              <Form.Group widths="equal">
+                <Form.Select
+                  fluid
+                  label="Location"
+                  options={locationOptions}
+                  placeholder="Select Your location"
+                  onChange={this.handleChange}
+                  defaultValue={this.props.location}
+                  style={{
+                    height: "32px",
+                    width: "205px"
+                  }}
+                />
+                <Form.Field>
+                  <label>Date</label>
+                  <DatePicker
+                    style={{ height: "32px", width: "205px" }}
+                    onChange={this.handleDateChange}
+                    defaultValue={moment(this.props.date, dateFormat)}
+                  />
+                </Form.Field>
+                <Button style={{ height: "32px", width: "205px", marginTop: "25px" }} type="submit" onClick={this.handleSubmit}>
+                  Submit
+                </Button>
+              </Form.Group>
+            </Form>
           </div>
         )}
       </div>

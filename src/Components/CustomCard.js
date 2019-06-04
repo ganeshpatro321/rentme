@@ -77,7 +77,7 @@ function CustomCard(props) {
               {props.carItemDetail.isAvailable ? (
                 <div>
                   <Button basic animated="fade" color="green" onClick={() => toggleSelected(!selected)}>
-                    <Button.Content visible>Available</Button.Content>
+                    <Button.Content visible>{ selected ? (<p>Selected</p>) : (<p>Available</p>) }</Button.Content>
                     <Button.Content hidden>{ selected ? (<p>Selected</p>) : (<p>Select</p>) }</Button.Content>
                   </Button>
                 </div>
