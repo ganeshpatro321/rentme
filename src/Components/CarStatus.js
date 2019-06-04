@@ -2,7 +2,7 @@ import React from "react";
 import CustomForm from "./CustomForm";
 import CustomCard from "./CustomCard";
 import moment from "moment";
-import { Segment, Form, Select } from "semantic-ui-react";
+import { Segment, Form, Select, Card, Image } from "semantic-ui-react";
 
 class CarStatus extends React.Component {
   constructor(props) {
@@ -18,38 +18,41 @@ class CarStatus extends React.Component {
 
   componentDidMount() {
     if (this.props.carDetails) {
-      this.setState(
-        {
-          carDetails: this.props.carDetails,
-          location: this.props.location,
-          date: this.props.date
-        }
-        );
-        this.getAvailableCars();
+      this.setState({
+        carDetails: this.props.carDetails,
+        location: this.props.location,
+        date: this.props.date
+      });
+      this.getAvailableCars();
     }
   }
 
   componentDidUpdate = () => {
-      if(this.props.location !== this.state.location){
-          console.log(this.state.location)
-          console.log(this.props.location)
-          this.setState({
-              location: this.props.location
-          }, () => {
-            this.getAvailableCars();
-          })
-          
-      }
-  }
+    if (this.props.location !== this.state.location) {
+      console.log(this.state.location);
+      console.log(this.props.location);
+      this.setState(
+        {
+          location: this.props.location
+        },
+        () => {
+          this.getAvailableCars();
+        }
+      );
+    }
+  };
 
-  handleChange = ( e, result) => {
-      const {name, value} = result;
-      this.setState({
-        [name] : value
-        }, () => {
-            this.getAvailableCars();
-        })
-  }
+  handleChange = (e, result) => {
+    const { name, value } = result;
+    this.setState(
+      {
+        [name]: value
+      },
+      () => {
+        this.getAvailableCars();
+      }
+    );
+  };
 
   availabilityCheck = (date, availability) => {
     date = moment(date, "YYYY-MM-DD");
@@ -62,7 +65,7 @@ class CarStatus extends React.Component {
   };
 
   getAvailableCars = () => {
-    const temp = this.props.carDetails.filter(
+    let temp = this.props.carDetails.filter(
       car => car.location === this.props.location
     );
     temp.forEach(car => {
@@ -71,15 +74,28 @@ class CarStatus extends React.Component {
         car.availability
       );
     });
+
+    if (this.state.carType !== "Any") {
+      temp = temp.filter(car => car.car_Type === this.state.carType);
+    }
+    if (this.state.fuelType !== "Any") {
+      temp = temp.filter(car => car.fuel_Type === this.state.fuelType);
+    }
+    if (this.state.transmission !== "Any") {
+      temp = temp.filter(car => car.transmission === this.state.transmission);
+    }
+
     this.sortAvailability(temp);
-
-    this.setState({
-      filteredCars: temp
-    },() => {
-        console.log("Called")
-    });
-  };    
-
+    // console.log(temp)
+    this.setState(
+      {
+        filteredCars: temp
+      },
+      () => {
+        console.log("Called");
+      }
+    );
+  };
 
   sortAvailability = temp => {
     temp.sort((a, b) => {
@@ -89,7 +105,7 @@ class CarStatus extends React.Component {
   };
 
   render() {
-    console.log(this.state)
+    console.log(this.state);
     var defaultType = {
       key: "Any",
       text: "Any",
@@ -136,7 +152,7 @@ class CarStatus extends React.Component {
           />
         </div>
         <div>
-          <Segment inverted>    
+          <Segment inverted>
             <Form inverted>
               <Form.Group widths="equal">
                 <Form.Field
@@ -177,13 +193,31 @@ class CarStatus extends React.Component {
           </Segment>
         </div>
         <div style={{ margin: "auto" }}>
-          {this.state.filteredCars.map(carItemDetail => (
-            <CustomCard
-              carItemDetail={carItemDetail}
-              landing={false}
-              carDetails={this.props.carDetails}
+          {this.state.filteredCars.length !== 0 ? (
+            <div>
+              {this.state.filteredCars.map(carItemDetail => (
+                <CustomCard
+                  carItemDetail={carItemDetail}
+                  landing={false}
+                  carDetails={this.props.carDetails}
+                />
+              ))}
+            </div>
+          ) : (
+            <div align="center" style = {{ marginTop: "50px"}}>
+            <Card>
+            <Image
+              src="http://www.newdesignfile.com/postpic/2014/04/black-and-white-cartoon-car_36063.jpg"
+              wrapped
+              ui={false}
+              size="medium"
             />
-          ))}
+            <Card.Content>
+              Sorry! There are no cars available for this filter. :(
+            </Card.Content>
+          </Card>
+            </div>
+          )}
         </div>
       </div>
     );
