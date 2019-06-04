@@ -14,12 +14,21 @@ class CustomForm extends React.Component {
       date: ""
     };
   }
-  
-  componentDidUpdate(prevProps) {
-  if(prevProps.location !== this.props.location || prevProps.date !== this.props.date){
+
+  componentDidMount() {
+      if(this.props.location || this.props.date){
+      this.setState({
+        location: this.props.location,
+        date: this.props.date
+      })
+    }
+  }
+
+  componentDidUpdate(prevState) {
+  if(prevState.location !== this.props.location || prevState.date !== this.props.date){
     this.setState({
       redirect: false,
-      lcoation: this.props.location,
+      location: this.props.location,
       date: this.props.date
     })
   }
@@ -102,7 +111,7 @@ class CustomForm extends React.Component {
               <label>Date</label>
               <DatePicker onChange={this.handleDateChange} defaultValue={moment(this.props.date, dateFormat)} />
             </Form.Field>
-            <Button type="submit" onClick={this.handleSubmit}>
+            <Button type="submit" onClick={this.handleSubmit} >
               Submit
             </Button>
             </Form.Group>

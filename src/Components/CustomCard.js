@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import CustomForm from "./CustomForm";
-import { Card, Image, Icon } from "semantic-ui-react";
+import { Card, Image, Icon, Button } from "semantic-ui-react";
 
 function CustomCard(props) {
+  let [selected, toggleSelected] = useState(false);
+  console.log(selected)
   return (
     <div>
       {props.landing ? (
@@ -26,8 +28,8 @@ function CustomCard(props) {
           </Card>
         </div>
       ) : (
-        <div style={{ margin: "30px 10px 30px 10px", float: "left" }} >
-          <Card>
+        <div style={{ margin: "30px 30px 30px 30px", float: "left" }}>
+          <Card style={{backgroundColor: selected ? '#abacad' : ''}}>
             <Image
               src={props.carItemDetail.photo}
               wrapped
@@ -35,42 +37,55 @@ function CustomCard(props) {
               size="medium"
             />
             <Card.Content>
-            <Card.Header><div align="center">{props.carItemDetail.name}</div></Card.Header>
+              <Card.Header>
+                <div align="center">{props.carItemDetail.name}</div>
+              </Card.Header>
               <Card.Description>
-                <div style = {{ display: "flex", margin: "0px auto"}}>
-                <div style= {{margin: "auto" }}>
-                  <p>
-                  <Icon name="location arrow" />
-                  {props.carItemDetail.location}
-                  </p>
-                  <p>
-                  <Icon name="dollar sign" />
-                  {props.carItemDetail.price}
-                  </p>
-                  <p>
-                  <Icon name="car" />
-                  {props.carItemDetail.car_Type}
-                  </p>
-                </div>
-                <div style= {{margin: "auto" }}>
-                  <p>
-                  <Icon name="flask" />
-                  {props.carItemDetail.fuel_Type}
-                  </p>
-                  <p>
-                  <Icon name="cog" />
-                  {props.carItemDetail.transmission}
-                  </p>
-                  <p>
-                  <Icon name="users" />
-                  {props.carItemDetail.seats}
-                  </p>
-                </div>
+                <div style={{ display: "flex", margin: "0px auto" }}>
+                  <div align="left" style={{ margin: "auto" }}>
+                    <p>
+                      <Icon name="location arrow" />
+                      {props.carItemDetail.location}
+                    </p>
+                    <p>
+                      <Icon name="dollar sign" />
+                      {props.carItemDetail.price}
+                    </p>
+                    <p>
+                      <Icon name="car" />
+                      {props.carItemDetail.car_Type}
+                    </p>
+                  </div>
+                  <div align="left" style={{ margin: "auto" }}>
+                    <p>
+                      <Icon name="flask" />
+                      {props.carItemDetail.fuel_Type}
+                    </p>
+                    <p>
+                      <Icon name="cog" />
+                      {props.carItemDetail.transmission}
+                    </p>
+                    <p>
+                      <Icon name="users" />
+                      {props.carItemDetail.seats}
+                    </p>
+                  </div>
                 </div>
               </Card.Description>
             </Card.Content>
             <Card.Content extra>
-              {props.carItemDetail.isAvailable ? <p align="center" style = {{ color: "green"}}>Available</p> : <p align="center" style={{color: "red"}}> Not Available </p>}
+              {props.carItemDetail.isAvailable ? (
+                <div>
+                  <Button basic animated="fade" color="green" onClick={() => toggleSelected(!selected)}>
+                    <Button.Content visible>Available</Button.Content>
+                    <Button.Content hidden>{ selected ? (<p>Selected</p>) : (<p>Select</p>) }</Button.Content>
+                  </Button>
+                </div>
+              ) : (
+                <Button basic disabled color="red">
+                    <Button.Content>Not Available</Button.Content>
+                  </Button>
+              )}
             </Card.Content>
           </Card>
         </div>

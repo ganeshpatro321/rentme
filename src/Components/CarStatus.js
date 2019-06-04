@@ -2,8 +2,15 @@ import React from "react";
 import CustomForm from "./CustomForm";
 import CustomCard from "./CustomCard";
 import moment from "moment";
-import SearchInput, {createFilter} from 'react-search-input';
-import { Segment, Form, Select, Card, Image } from "semantic-ui-react";
+import SearchInput, { createFilter } from "react-search-input";
+import {
+  Segment,
+  Form,
+  Select,
+  Card,
+  Image,
+  Pagination
+} from "semantic-ui-react";
 
 class CarStatus extends React.Component {
   constructor(props) {
@@ -15,7 +22,8 @@ class CarStatus extends React.Component {
       fuelType: "Any",
       transmission: "Any",
       priceOrder: "Low To High",
-      searchTerm: ""
+      searchTerm: "",
+      activePage: 1
     };
   }
 
@@ -31,12 +39,14 @@ class CarStatus extends React.Component {
   }
 
   componentDidUpdate = () => {
-    if (this.props.location !== this.state.location) {
-      console.log(this.state.location);
-      console.log(this.props.location);
+    if (
+      this.props.location !== this.state.location ||
+      this.props.date !== this.state.date
+    ) {
       this.setState(
         {
-          location: this.props.location
+          location: this.props.location,
+          date: this.props.date
         },
         () => {
           this.getAvailableCars();
@@ -57,11 +67,15 @@ class CarStatus extends React.Component {
     );
   };
 
-  searchUpdated = (term) => {
-      this.setState({searchTerm: term}, () => {
-          this.getAvailableCars();
-      })
+  handlePaginationChange = (e, {activePage}) => {
+      this.setState({activePage})
   }
+
+  searchUpdated = term => {
+    this.setState({ searchTerm: term }, () => {
+      this.getAvailableCars();
+    });
+  };
 
   availabilityCheck = (date, availability) => {
     date = moment(date, "YYYY-MM-DD");
@@ -74,7 +88,13 @@ class CarStatus extends React.Component {
   };
 
   getAvailableCars = () => {
-    const KEYS_TO_FILTER = ['name', 'car_Type', 'fuel_Type', 'transmission', 'location']
+    const KEYS_TO_FILTER = [
+      "name",
+      "car_Type",
+      "fuel_Type",
+      "transmission",
+      "location"
+    ];
     let temp = this.props.carDetails.filter(
       car => car.location === this.props.location
     );
@@ -94,42 +114,41 @@ class CarStatus extends React.Component {
     if (this.state.transmission !== "Any") {
       temp = temp.filter(car => car.transmission === this.state.transmission);
     }
-    this.sortCarsByPrice(temp, this.state.priceOrder)
+    this.sortCarsByPrice(temp, this.state.priceOrder);
     this.sortAvailability(temp); //To show available cars first.
-    if(this.state.searchTerm !== ""){
-    temp = temp.filter(createFilter(this.state.searchTerm, KEYS_TO_FILTER));
+    if (this.state.searchTerm !== "") {
+      temp = temp.filter(createFilter(this.state.searchTerm, KEYS_TO_FILTER));
     }
-    this.setState(
-      {
-        filteredCars: temp
-      }
-    );
+    this.setState({
+      filteredCars: temp
+    });
   };
 
   sortCarsByPrice = (temp, order) => {
-      if(order === "Low To High"){
-          temp.sort((a,b) => {
-              if(a.price > b.price) return 1
-              if(a.proce < b.price) return -1
-          })
-      }
-      if(order === "High To Low"){
-          temp.sort((a, b) => {
-            if (a.price > b.price) return -1
-            if (a.price < b.price) return 1
-          })
-      }
-  }
+    if (order === "Low To High") {
+      temp.sort((a, b) => {
+        if (a.price > b.price) return 1;
+        if (a.proce < b.price) return -1;
+      });
+    }
+    if (order === "High To Low") {
+      temp.sort((a, b) => {
+        if (a.price > b.price) return -1;
+        if (a.price < b.price) return 1;
+      });
+    }
+  };
 
   sortAvailability = temp => {
     temp.sort((a, b) => {
       if (a.isAvailable > b.isAvailable) return -1;
       if (b.isAvailable > a.isAvailable) return 1;
-    });
+    }); 
   };
 
   render() {
-    console.log(this.state);
+    const begin = (this.state.activePage-1)*6;
+    const end = (this.state.activePage-1)*6 + 6;
     var defaultType = {
       key: "Any",
       text: "Any",
@@ -138,15 +157,18 @@ class CarStatus extends React.Component {
     const carTypeOptions = [defaultType];
     const fuelTypeOptions = [defaultType];
     const transmissionOptions = [defaultType];
-    const orderOptions = [{
+    const orderOptions = [
+      {
         key: "Low To High",
         text: "Low To High",
         value: "Low To High"
-    }, {
+      },
+      {
         key: "High To Low",
         text: "High To Low",
         value: "High To Low"
-    }]
+      }
+    ];
     const map = new Map();
     for (const carInstance of this.props.carDetails) {
       if (!map.has(carInstance.car_Type)) {
@@ -184,8 +206,8 @@ class CarStatus extends React.Component {
             date={this.props.date}
           />
         </div>
-        <div>
-          <Segment inverted>
+        <div style={{margin: "auto", width: "1200px"}}>
+          <Segment style={{backgroundColor: "#4d4d4d"}}>
             <Form inverted>
               <Form.Group widths="equal">
                 <Form.Field
@@ -235,17 +257,27 @@ class CarStatus extends React.Component {
                   onChange={this.handleChange}
                 />
                 <Form.Field>
-                    <label> Search </label>
-                    <SearchInput placeholder="Search using keywords. (Ex: SUV, Mahindra)" onChange={this.searchUpdated} />
+                  <label> Search </label>
+                  <SearchInput
+                    placeholder="Search using keywords. (Ex: SUV, Mahindra)"
+                    onChange={this.searchUpdated}
+                  />
                 </Form.Field>
               </Form.Group>
             </Form>
           </Segment>
         </div>
-        <div style={{ margin: "auto" }}>
+        <div align="center" style={{ marginTop: "20px" }}>
+          <Pagination
+            defaultActivePage={this.state.activePage}
+            totalPages={this.state.filteredCars.length / 6}
+            onPageChange={this.handlePaginationChange}
+          />
+        </div>
+        <div align="center" style={{marginLeft: "50px"}}>
           {this.state.filteredCars.length !== 0 ? (
-            <div>
-              {this.state.filteredCars.map(carItemDetail => (
+            <div align="center" style={{width: "1200px", margin:"0px 0px 0px 50px"}}>
+              {this.state.filteredCars.slice(begin, end).map(carItemDetail => (
                 <CustomCard
                   carItemDetail={carItemDetail}
                   landing={false}
@@ -254,18 +286,18 @@ class CarStatus extends React.Component {
               ))}
             </div>
           ) : (
-            <div align="center" style = {{ marginTop: "50px"}}>
-            <Card>
-            <Image
-              src="http://www.newdesignfile.com/postpic/2014/04/black-and-white-cartoon-car_36063.jpg"
-              wrapped
-              ui={false}
-              size="medium"
-            />
-            <Card.Content>
-              Sorry! There are no cars available for this filter. :(
-            </Card.Content>
-          </Card>
+            <div align="center" style={{ marginTop: "50px"}}>
+              <Card>
+                <Image
+                  src="http://www.newdesignfile.com/postpic/2014/04/black-and-white-cartoon-car_36063.jpg"
+                  wrapped
+                  ui={false}
+                  size="medium"
+                />
+                <Card.Content>
+                  Sorry! There are no cars available for this filter. :(
+                </Card.Content>
+              </Card>
             </div>
           )}
         </div>
