@@ -14,15 +14,13 @@ class CustomForm extends React.Component {
       date: ""
     };
   }
-
-  componentDidMount() {
-    console.log("Form Mounted")
-  }
-
+  
   componentDidUpdate(prevProps) {
-  if(prevProps.location !== this.props.location){
+  if(prevProps.location !== this.props.location || prevProps.date !== this.props.date){
     this.setState({
-      redirect: false
+      redirect: false,
+      lcoation: this.props.location,
+      date: this.props.date
     })
   }
   }

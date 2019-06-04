@@ -12,7 +12,8 @@ class CarStatus extends React.Component {
       filteredCars: [],
       carType: "Any",
       fuelType: "Any",
-      transmission: "Any"
+      transmission: "Any",
+      priceOrder: "Low To High"
     };
   }
 
@@ -84,9 +85,8 @@ class CarStatus extends React.Component {
     if (this.state.transmission !== "Any") {
       temp = temp.filter(car => car.transmission === this.state.transmission);
     }
-
-    this.sortAvailability(temp);
-    // console.log(temp)
+    this.sortAvailability(temp); //To show available cars first.
+    this.sortCarsByPrice(temp, this.state.priceOrder)
     this.setState(
       {
         filteredCars: temp
@@ -96,6 +96,21 @@ class CarStatus extends React.Component {
       }
     );
   };
+
+  sortCarsByPrice = (temp, order) => {
+      if(order === "Low To High"){
+          temp.sort((a,b) => {
+              if(a.price > b.price) return 1
+              if(a.proce < b.price) return -1
+          })
+      }
+      if(order === "High To Low"){
+          temp.sort((a, b) => {
+            if (a.price > b.price) return -1
+            if (a.price < b.price) return 1
+          })
+      }
+  }
 
   sortAvailability = temp => {
     temp.sort((a, b) => {
@@ -114,6 +129,15 @@ class CarStatus extends React.Component {
     const carTypeOptions = [defaultType];
     const fuelTypeOptions = [defaultType];
     const transmissionOptions = [defaultType];
+    const orderOptions = [{
+        key: "Low To High",
+        text: "Low To High",
+        value: "Low To High"
+    }, {
+        key: "High To Low",
+        text: "High To Low",
+        value: "High To Low"
+    }]
     const map = new Map();
     for (const carInstance of this.props.carDetails) {
       if (!map.has(carInstance.car_Type)) {
@@ -186,6 +210,19 @@ class CarStatus extends React.Component {
                     htmlFor: "form-select-control-gender"
                   }}
                   defaultValue={this.state.transmission}
+                  onChange={this.handleChange}
+                />
+              </Form.Group>
+              <Form.Group widths="equal">
+                <Form.Field
+                  name="priceOrder"
+                  control={Select}
+                  options={orderOptions}
+                  label={{
+                    children: "Order By Price",
+                    htmlFor: "form-select-control-gender"
+                  }}
+                  defaultValue={this.state.priceOrder}
                   onChange={this.handleChange}
                 />
               </Form.Group>
