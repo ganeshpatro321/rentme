@@ -18,7 +18,6 @@ export default class Home extends React.Component {
     }
 
     render(){
-        console.log(this.state.carDetails)
         return(
             <CustomCard carDetails={this.state.carDetails} landing={true}/>
         )

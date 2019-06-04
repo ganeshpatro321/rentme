@@ -15,6 +15,18 @@ class CustomForm extends React.Component {
     };
   }
 
+  componentDidMount() {
+    console.log("Form Mounted")
+  }
+
+  componentDidUpdate(prevProps) {
+  if(prevProps.location !== this.props.location){
+    this.setState({
+      redirect: false
+    })
+  }
+  }
+
   handleDateChange = selectedDate => {
     this.setState({
       date: selectedDate._d.toISOString().slice(0, 10)
