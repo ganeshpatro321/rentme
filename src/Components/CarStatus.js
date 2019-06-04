@@ -1,3 +1,7 @@
+//This page is used to display the available cars.
+//The logic for various filters are implemented here.
+
+
 import React from "react";
 import CustomForm from "./CustomForm";
 import CustomCard from "./CustomCard";

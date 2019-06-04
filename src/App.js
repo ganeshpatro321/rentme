@@ -1,3 +1,6 @@
+//Root page of the app.
+//Routings of the website are implemented here.
+
 import React from "react";
 import "./App.css";
 import { BrowserRouter, Route, Switch} from 'react-router-dom';

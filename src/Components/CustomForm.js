@@ -1,3 +1,6 @@
+//This component is a reusable component to update the location and date of requirement.
+//This had two for structures, horizontal and vertical, these are used in the landing and status page.
+
 import React from "react";
 import { Button, Select, Form } from "semantic-ui-react";
 import { Redirect } from "react-router-dom";

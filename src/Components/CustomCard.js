@@ -1,3 +1,7 @@
+// This is a functional card component used to display car details.
+//React hooks are been used for variable management in this classless component.
+
+
 import React, { useState } from "react";
 import CustomForm from "./CustomForm";
 import { Card, Image, Icon, Button } from "semantic-ui-react";

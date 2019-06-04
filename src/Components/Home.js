@@ -1,3 +1,5 @@
+//This component is the landing component of the webste.
+
 import React from 'react';
 import CustomCard from './CustomCard';
 
